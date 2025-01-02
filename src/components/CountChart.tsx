@@ -1,12 +1,7 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import {
-  RadialBarChart,
-  RadialBar,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 
 const data = [
   {
@@ -29,11 +24,12 @@ const data = [
 const CountChart = () => {
   return (
     <div className="w-full h-full rounded-xl p-4 bg-white">
-      {/* TOP */}
+      {/* TITLE */}
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold">Students</h1>
         <Image src="/moreDark.png" alt="students" width={20} height={20} />
       </div>
+      {/* CHART */}
       <div className="relative w-full h-[75%]">
         <ResponsiveContainer>
           <RadialBarChart
@@ -60,7 +56,7 @@ const CountChart = () => {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </div>
-      {/* BOTTOM */}
+      {/* LEGEND*/}
       <div className="flex justify-center gap-16">
         <div className="flex flex-col gap-1 justify-center items-center text-center">
           <div className="w-5 h-5 rounded-full bg-lamaSky"></div>

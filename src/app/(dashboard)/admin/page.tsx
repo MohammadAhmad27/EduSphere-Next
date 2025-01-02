@@ -1,7 +1,21 @@
-import AttendanceChart from "@/components/AttendanceChart";
-import CountChart from "@/components/CountChart";
-import UserCard from "@/components/UserCard";
 import React from "react";
+import dynamic from "next/dynamic";
+import EventCalendar from "@/components/EventCalendar";
+import Announcements from "@/components/Announcements";
+import UserCard from "@/components/UserCard";
+
+const CountChart = dynamic(() => import("@/components/CountChart"), {
+  ssr: false,
+  loading: () => <div>Loading Count Chart...</div>,
+});
+const AttendanceChart = dynamic(() => import("@/components/AttendanceChart"), {
+  ssr: false,
+  loading: () => <div>Loading Attendance Chart...</div>,
+});
+const FinanceChart = dynamic(() => import("@/components/FinanceChart"), {
+  ssr: false,
+  loading: () => <div>Loading Finance Chart...</div>,
+});
 
 const AdminPage = () => {
   return (
@@ -25,10 +39,15 @@ const AdminPage = () => {
           </div>
         </div>
         {/* BOTTOM CHART */}
-        <div className="w-full">{/* CHART */}</div>
+        <div className="w-full h-[500px]">
+          <FinanceChart />
+        </div>
       </div>
       {/* RIGHT */}
-      <div className="w-full lg:w-1/3">RIGHT</div>
+      <div className="w-full lg:w-1/3 flex flex-col gap-8">
+        <EventCalendar />
+        <Announcements />
+      </div>
     </div>
   );
 };
