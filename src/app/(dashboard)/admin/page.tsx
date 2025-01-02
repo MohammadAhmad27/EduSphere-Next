@@ -19,7 +19,7 @@ const FinanceChart = dynamic(() => import("@/components/FinanceChart"), {
 
 const AdminPage = () => {
   return (
-    <div className="flex flex-col md:flex-row gap-4">
+    <div className="flex flex-col md:flex-row gap-4 p-4">
       {/* LEFT */}
       <div className="w-full lg:w-2/3 flex flex-col gap-8">
         {/* USER CARD */}
