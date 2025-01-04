@@ -1,20 +1,19 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, teachersData } from "@/lib/data";
+import { role, studentsData } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
-type Teacher = {
+type Student = {
   id: number;
-  teacherId: string;
+  studentId: string;
   name: string;
   email?: string;
   photo: string;
-  phone: string;
-  subjects: string[];
-  classes: string[];
+  phone?: string;
+  grade: number;
+  class: string;
   address: string;
 };
 
@@ -24,18 +23,13 @@ const columns = [
     accessor: "info",
   },
   {
-    header: "Teacher ID",
-    accessor: "teacherId",
+    header: "Student ID",
+    accessor: "studentId",
     className: "hidden md:table-cell",
   },
   {
-    header: "Subjects",
-    accessor: "subjects",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Classes",
-    accessor: "classes",
+    header: "Grade",
+    accessor: "grade",
     className: "hidden md:table-cell",
   },
   {
@@ -54,8 +48,8 @@ const columns = [
   },
 ];
 
-const TeacherListPage = () => {
-  const renderRow = (item: Teacher) => (
+const StudentListPage = () => {
+  const renderRow = (item: Student) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
@@ -70,12 +64,11 @@ const TeacherListPage = () => {
         />
         <div className="flex flex-col">
           <h3 className="font-semibold">{item.name}</h3>
-          <p className="text-xs text-gray-500">{item?.email}</p>
+          <p className="text-xs text-gray-500">{item.class}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell">{item.teacherId}</td>
-      <td className="hidden md:table-cell">{item.subjects.join(",")}</td>
-      <td className="hidden md:table-cell">{item.classes.join(",")}</td>
+      <td className="hidden md:table-cell">{item.studentId}</td>
+      <td className="hidden md:table-cell">{item.grade}</td>
       <td className="hidden md:table-cell">{item.phone}</td>
       <td className="hidden md:table-cell">{item.address}</td>
       <td>
@@ -100,40 +93,22 @@ const TeacherListPage = () => {
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
-      <div className="flex justify-between items-center">
-        <h1 className="hidden md:block text-lg font-semibold">All Teachers</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="hidden md:block text-lg font-semibold">All Students</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="size-8 bg-lamaYellow rounded-full flex items-center justify-center">
-              <Image
-                src="/filter.png"
-                width={14}
-                height={14}
-                alt=""
-                className="object-cover"
-              />
+            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+              <Image src="/filter.png" alt="" width={14} height={14} />
               <span className="hidden">button</span>
             </button>
-            <button className="size-8 bg-lamaYellow rounded-full flex items-center justify-center">
-              <Image
-                src="/sort.png"
-                width={14}
-                height={14}
-                alt=""
-                className="object-cover"
-              />
+            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+              <Image src="/sort.png" alt="" width={14} height={14} />
               <span className="hidden">button</span>
             </button>
             {role === "admin" && (
-              <button className="size-8 bg-lamaYellow rounded-full flex items-center justify-center">
-                <Image
-                  src="/plus.png"
-                  width={14}
-                  height={14}
-                  alt=""
-                  className="object-cover"
-                />
+              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+                <Image src="/plus.png" alt="" width={14} height={14} />
                 <span className="hidden">button</span>
               </button>
             )}
@@ -141,11 +116,11 @@ const TeacherListPage = () => {
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={teachersData} />
+      <Table columns={columns} renderRow={renderRow} data={studentsData} />
       {/* PAGINATION */}
       <Pagination />
     </div>
   );
 };
 
-export default TeacherListPage;
+export default StudentListPage;
