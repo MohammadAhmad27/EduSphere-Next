@@ -114,6 +114,8 @@ const StudentListPage = async ({
               mode: "insensitive",
             };
             break;
+          default:
+            break;
         }
       }
     }
@@ -134,7 +136,7 @@ const StudentListPage = async ({
       where: query,
     }),
   ]);
-  console.log("SudentList:", data);
+  console.log("StudentList:", data);
   console.log("Students Length:", count);
 
   return (
