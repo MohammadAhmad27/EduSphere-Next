@@ -80,7 +80,6 @@ const SubjectListPage = async ({
     }
   }
 
-  // find all teachers
   const [data, count] = await prisma.$transaction([
     prisma.subject.findMany({
       where: query,

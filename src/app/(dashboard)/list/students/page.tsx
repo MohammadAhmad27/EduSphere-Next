@@ -121,7 +121,6 @@ const StudentListPage = async ({
     }
   }
 
-  // find all teachers
   const [data, count] = await prisma.$transaction([
     prisma.student.findMany({
       where: query,
