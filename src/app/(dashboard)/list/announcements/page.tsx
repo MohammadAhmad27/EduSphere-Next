@@ -96,8 +96,8 @@ const AnnouncementListPage = async ({
       where: query,
     }),
   ]);
-  console.log("EventList:", data);
-  console.log("Events Length:", count);
+  console.log("AnnounecementList:", data);
+  console.log("Announcements Length:", count);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
