@@ -5,6 +5,7 @@ import TableSearch from "@/components/TableSearch";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { role as getRole } from "@/lib/utils";
+import { currentUserId as getCurrentUserId } from "@/lib/utils";
 import { Announcement, Class, Prisma } from "@prisma/client";
 import Image from "next/image";
 
@@ -15,16 +16,18 @@ const AnnouncementListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  // Fetch the role asynchronously
+  // Fetch the role & currentUserId
   const role = await getRole();
   console.log(role);
+  const currentUserId = await getCurrentUserId();
+  console.log(currentUserId);
 
   // Search params for pagination
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
 
   // Build query for filtering
-  const query: Prisma.EventWhereInput = {};
+  const query: Prisma.AnnouncementWhereInput = {};
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
@@ -39,9 +42,21 @@ const AnnouncementListPage = async ({
     }
   }
 
+  //ROLE CONDITIONS
+  const roleConditions = {
+    teacher: { lessons: { some: { teacherId: currentUserId! } } },
+    student: { students: { some: { id: currentUserId! } } },
+    parent: { students: { some: { parentId: currentUserId! } } },
+  };
+
+  query.OR = [
+    { classId: null },
+    { class: roleConditions[role as keyof typeof roleConditions] || {} },
+  ];
+
   // Fetch data and count
   const [data, count] = await prisma.$transaction([
-    prisma.event.findMany({
+    prisma.announcement.findMany({
       where: query,
       include: {
         class: true,
@@ -49,7 +64,7 @@ const AnnouncementListPage = async ({
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
-    prisma.event.count({ where: query }),
+    prisma.announcement.count({ where: query }),
   ]);
 
   // Define columns dynamically based on the role

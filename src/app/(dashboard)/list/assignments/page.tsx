@@ -22,7 +22,7 @@ const AssignmentListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  // fetching role
+  // fetching role & currentUserId
   const role = await getRole();
   console.log(role);
   const currentUserId = await getCurrentUserId();
@@ -35,7 +35,6 @@ const AssignmentListPage = async ({
   console.log(p);
 
   // URL PARAMS CONDITION
-
   const query: Prisma.AssignmentWhereInput = {};
   query.lesson = {};
 
