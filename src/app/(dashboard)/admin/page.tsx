@@ -1,17 +1,23 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import EventCalendar from "@/components/EventCalendar";
 import Announcements from "@/components/Announcements";
 import UserCard from "@/components/UserCard";
+import EventCalendarContainer from "@/components/EventCalendarContainer";
 
-const CountChart = dynamic(() => import("@/components/CountChart"), {
-  ssr: false,
-  loading: () => <div>Loading Count Chart...</div>,
-});
-const AttendanceChart = dynamic(() => import("@/components/AttendanceChart"), {
-  ssr: false,
-  loading: () => <div>Loading Attendance Chart...</div>,
-});
+const CountChartContainer = dynamic(
+  () => import("@/components/CountChartContainer"),
+  {
+    ssr: false,
+    loading: () => <div>Loading Count Chart...</div>,
+  }
+);
+const AttendanceChartContainer = dynamic(
+  () => import("@/components/AttendanceChartContainer"),
+  {
+    ssr: false,
+    loading: () => <div>Loading Attendance Chart...</div>,
+  }
+);
 const FinanceChart = dynamic(() => import("@/components/FinanceChart"), {
   ssr: false,
   loading: () => <div>Loading Finance Chart...</div>,
@@ -32,10 +38,10 @@ const AdminPage = () => {
         {/* MIDDLE CHART */}
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="w-full lg:w-1/3 h-[450px]">
-            <CountChart />
+            <CountChartContainer />
           </div>
           <div className="w-full lg:w-2/3 h-[450px]">
-            <AttendanceChart />
+            <AttendanceChartContainer />
           </div>
         </div>
         {/* BOTTOM CHART */}
@@ -45,7 +51,7 @@ const AdminPage = () => {
       </div>
       {/* RIGHT */}
       <div className="w-full lg:w-1/3 flex flex-col gap-8">
-        <EventCalendar />
+        <EventCalendarContainer />
         <Announcements />
       </div>
     </div>
