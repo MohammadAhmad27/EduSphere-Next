@@ -23,7 +23,11 @@ const FinanceChart = dynamic(() => import("@/components/FinanceChart"), {
   loading: () => <div>Loading Finance Chart...</div>,
 });
 
-const AdminPage = () => {
+const AdminPage = ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) => {
   return (
     <div className="flex flex-col md:flex-row gap-4 p-4">
       {/* LEFT */}
@@ -51,7 +55,7 @@ const AdminPage = () => {
       </div>
       {/* RIGHT */}
       <div className="w-full lg:w-1/3 flex flex-col gap-8">
-        <EventCalendarContainer />
+        <EventCalendarContainer searchParams={searchParams} />
         <Announcements />
       </div>
     </div>

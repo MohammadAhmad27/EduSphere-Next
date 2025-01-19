@@ -16,7 +16,7 @@ const EventCalendar = () => {
     if (value instanceof Date) {
       router.push(`?date=${value.toLocaleDateString("en-US")}`);
     }
-  }, [value, router]);
+  }, [value]);
 
   return <Calendar onChange={onChange} value={value} />;
 };
