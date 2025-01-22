@@ -1,17 +1,38 @@
 "use client";
+import { deleteSubject } from "@/lib/actions";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useFormState } from "react-dom";
+import { toast } from "react-toastify";
+
+// Delete Actions
+const deleteActionMap: any = {
+  subject: deleteSubject,
+  // class: deleteClass,
+  // teacher: deleteTeacher,
+  // student: deleteStudent,
+  // exam: deleteExam,
+  // TODO: OTHER DELETE ACTIONS
+  parent: deleteSubject,
+  lesson: deleteSubject,
+  assignment: deleteSubject,
+  result: deleteSubject,
+  attendance: deleteSubject,
+  event: deleteSubject,
+  announcement: deleteSubject,
+};
 
 // All Forms
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
-  loading: () => <h1>Loading...</h1>,
+  loading: () => <div>Loading...</div>,
 });
 const StudentForm = dynamic(() => import("./forms/StudentForm"), {
-  loading: () => <h1>Loading...</h1>,
+  loading: () => <div>Loading...</div>,
 });
 const SubjectForm = dynamic(() => import("./forms/SubjectForm"), {
-  loading: () => <h1>Loading...</h1>,
+  loading: () => <div>Loading...</div>,
 });
 
 // Conditional rendering
@@ -67,9 +88,31 @@ const FormModal = ({
   const [open, setOpen] = useState(false);
 
   const Form = () => {
+    const router = useRouter();
+
+    const [state, formAction] = useFormState(deleteActionMap[table], {
+      success: false,
+      error: false,
+    });
+
+    useEffect(() => {
+      if (state.success) {
+        toast("Subject has been deleted!");
+        setOpen(false);
+        router.refresh();
+      }
+    }, [state]);
+
     if (type === "delete" && id) {
       return (
-        <form className="p-4 flex flex-col gap-4">
+        <form action={formAction} className="p-4 flex flex-col gap-4">
+          <input
+            type="text | number"
+            placeholder="hiden"
+            name="id"
+            value={id}
+            className="hidden"
+          />
           <span className="text-center font-medium">
             All data will be lost. Are you sure you want to delete this {table}?
           </span>
