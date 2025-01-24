@@ -30,10 +30,12 @@ const TeacherForm = ({
   setOpen,
   type,
   data,
+  relatedData,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: "create" | "update";
   data?: any;
+  relatedData?: any;
 }) => {
   const {
     register,

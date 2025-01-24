@@ -15,6 +15,11 @@ export const createSubject = async (
     await prisma.subject.create({
       data: {
         name: data.name,
+        teachers: {
+          connect: data.teachers.map((teacherId) => ({
+            id: teacherId,
+          })),
+        },
       },
     });
     // revalidatePath("/list/subjects");
@@ -40,6 +45,11 @@ export const updateSubject = async (
     await prisma.subject.update({
       where: {
         id: data.id,
+        teachers: {
+          set: data.teachers.map((teacherId) => ({
+            id: teacherId,
+          })),
+        },
       },
       data: {
         name: data.name,

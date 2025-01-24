@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
+import { FormContainerProps } from "./FormContainer";
 
 // Delete Actions
 const deleteActionMap: any = {
@@ -40,17 +41,33 @@ const forms: {
   [key: string]: (
     setOpen: Dispatch<SetStateAction<boolean>>,
     type: "create" | "update",
-    data?: any
+    data?: any,
+    relatedData?: any
   ) => JSX.Element;
 } = {
-  teacher: (setOpen, type, data) => (
-    <TeacherForm setOpen={setOpen} type={type} data={data} />
+  teacher: (setOpen, type, data, relatedData) => (
+    <TeacherForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />
   ),
-  student: (setOpen, type, data) => (
-    <StudentForm setOpen={setOpen} type={type} data={data} />
+  student: (setOpen, type, data, relatedData) => (
+    <StudentForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />
   ),
-  subject: (setOpen, type, data) => (
-    <SubjectForm setOpen={setOpen} type={type} data={data} />
+  subject: (setOpen, type, data, relatedData) => (
+    <SubjectForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />
   ),
 };
 
@@ -59,24 +76,8 @@ const FormModal = ({
   type,
   data,
   id,
-}: {
-  table:
-    | "teacher"
-    | "student"
-    | "parent"
-    | "subject"
-    | "class"
-    | "lesson"
-    | "exam"
-    | "assignment"
-    | "result"
-    | "attendance"
-    | "event"
-    | "announcement";
-  type: "create" | "update" | "delete";
-  data?: any;
-  id?: string | number;
-}) => {
+  relatedData,
+}: FormContainerProps & { relatedData?: any }) => {
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor =
     type === "create"
@@ -108,7 +109,7 @@ const FormModal = ({
         <form action={formAction} className="p-4 flex flex-col gap-4">
           <input
             type="text | number"
-            placeholder="hiden"
+            placeholder="hidden"
             name="id"
             value={id}
             className="hidden"
@@ -122,7 +123,7 @@ const FormModal = ({
         </form>
       );
     } else if ((type === "create" || type === "update") && forms[table]) {
-      return forms[table](setOpen, type, data);
+      return forms[table](setOpen, type, data, relatedData);
     } else {
       return <div className="text-center text-red-600">Form not found!</div>;
     }
