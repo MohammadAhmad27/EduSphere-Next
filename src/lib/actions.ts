@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { ClassSchema, SubjectSchema } from "./formValidationSchemas";
+import { ClassSchema, SubjectSchema, TeacherSchema } from "./formValidationSchemas";
 import prisma from "./prisma";
 
 type CurrentState = { success: boolean; error: boolean };
@@ -34,7 +34,7 @@ export const createSubject = async (
   }
 };
 
-//update subject
+// update subject
 export const updateSubject = async (
   currentState: CurrentState,
   data: SubjectSchema
@@ -65,7 +65,7 @@ export const updateSubject = async (
   }
 };
 
-//delete subject
+// delete subject
 export const deleteSubject = async (
   currentState: CurrentState,
   data: FormData
@@ -91,7 +91,7 @@ export const deleteSubject = async (
   }
 };
 
-// create subject
+// create class
 export const createClass = async (
   currentState: CurrentState,
   data: ClassSchema
@@ -114,7 +114,7 @@ export const createClass = async (
   }
 };
 
-//update subject
+// update class
 export const updateClass = async (
   currentState: CurrentState,
   data: ClassSchema
@@ -140,7 +140,7 @@ export const updateClass = async (
   }
 };
 
-//delete class
+// delete class
 export const deleteClass = async (
   currentState: CurrentState,
   data: FormData
@@ -153,6 +153,82 @@ export const deleteClass = async (
       },
     });
     // revalidatePath("/list/class");
+    return {
+      success: true,
+      error: false,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error: true,
+    };
+  }
+};
+
+
+// create teacher
+export const createTeacher = async (
+  currentState: CurrentState,
+  data: TeacherSchema
+) => {
+  try {
+    await prisma.teacher.create({
+      data,
+    });
+    // revalidatePath("/list/teachers");
+    return {
+      success: true,
+      error: false,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error: true,
+    };
+  }
+};
+
+// update teacher
+export const updateTeacher = async (
+  currentState: CurrentState,
+  data: TeacherSchema
+) => {
+  try {
+    await prisma.teacher.update({
+      where: {
+        id: data.id,
+      },
+      data,
+    });
+    // revalidatePath("/list/teachers");
+    return {
+      success: true,
+      error: false,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error: true,
+    };
+  }
+};
+
+// delete teacher
+export const deleteTeacher = async (
+  currentState: CurrentState,
+  data: FormData
+) => {
+  const id = data.get("id") as string;
+  try {
+    await prisma.teacher.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    // revalidatePath("/list/teachers");
     return {
       success: true,
       error: false,
