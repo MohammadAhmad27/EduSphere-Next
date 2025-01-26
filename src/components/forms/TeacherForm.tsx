@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useFormState } from "react-dom";
 import { createTeacher, updateTeacher } from "@/lib/actions";
 import { toast } from "react-toastify";
+import { CldUploadWidget } from "next-cloudinary";
 
 const TeacherForm = ({
   setOpen,
@@ -27,7 +28,8 @@ const TeacherForm = ({
   } = useForm<TeacherSchema>({
     resolver: zodResolver(teacherSchema),
   });
-
+  // image storage state
+  const [img, setImg] = useState<any>("");
   // alternative of revalidate path to fix its client cache issue
   const router = useRouter();
   // After React 19 it will be useActionState
@@ -41,7 +43,7 @@ const TeacherForm = ({
   const onSubmit = handleSubmit((data) => {
     console.log(data);
     // createTeacher(data);
-    formAction(data);
+    formAction({ ...data, img: img?.secure_url });
   });
 
   useEffect(() => {
@@ -130,11 +132,21 @@ const TeacherForm = ({
         <InputField
           label="Birthday"
           name="birthday"
-          defaultValue={data?.birthday}
+          defaultValue={data?.birthday.toISOString().split("T")[0]}
           register={register}
           error={errors.birthday}
           type="date"
         />
+         {data && (
+          <InputField
+            label="id"
+            name="id"
+            defaultValue={data?.id}
+            register={register}
+            error={errors?.id}
+            hidden
+          />
+        )}
         {/* select */}
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Sex</label>
@@ -143,8 +155,8 @@ const TeacherForm = ({
             {...register("sex")}
             defaultValue={data?.sex}
           >
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="MALE">Male</option>
+            <option value="FEMALE">Female</option>
           </select>
           {errors.sex?.message && (
             <p className="text-xs text-red-400">
@@ -173,22 +185,37 @@ const TeacherForm = ({
           )}
         </div>
         {/* Image */}
-        {/* <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
-          <label
-            htmlFor="img"
-            className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
-          >
-            <Image src="/upload.png" alt="upload" width={28} height={28} />
-            <span>Upload a photo</span>
-          </label>
-          <input type="file" id="img" {...register("img")} className="hidden" />
-          {errors.img?.message && (
-            <p className="text-xs text-red-400">
-              {errors.img.message.toString()}
-            </p>
-          )}
-        </div> */}
+        {/* Cloudinary */}
+        <CldUploadWidget
+          uploadPreset="school"
+          onSuccess={(result, { widget }) => {
+            setImg(result?.info);
+            widget.close();
+          }}
+        >
+          {({ open }) => {
+            return (
+              <label
+                htmlFor="img"
+                className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
+                onClick={() => open()}
+              >
+                <Image
+                  src="/upload.png"
+                  alt="upload"
+                  id="img"
+                  width={28}
+                  height={28}
+                />
+                <span>Upload a photo</span>
+              </label>
+            );
+          }}
+        </CldUploadWidget>
       </div>
+      {state.error && (
+        <span className="text-red-500">Something went wrong!</span>
+      )}
       <button type="submit" className="p-2 rounded-md text-white bg-[#008AF2]">
         {type === "create" ? "Create" : "Update"}
       </button>

@@ -1,8 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { ClassSchema, SubjectSchema, TeacherSchema } from "./formValidationSchemas";
+import {
+  ClassSchema,
+  SubjectSchema,
+  TeacherSchema,
+} from "./formValidationSchemas";
 import prisma from "./prisma";
+import { v4 as uuidv4 } from "uuid"; // Import UUID
 
 type CurrentState = { success: boolean; error: boolean };
 
@@ -166,15 +171,33 @@ export const deleteClass = async (
   }
 };
 
-
 // create teacher
 export const createTeacher = async (
   currentState: CurrentState,
   data: TeacherSchema
 ) => {
   try {
+    const uniqueId = uuidv4(); // Generate a unique ID
+
     await prisma.teacher.create({
-      data,
+      data: {
+        id: uniqueId,
+        username: data.username,
+        name: data.name,
+        surname: data.surname,
+        email: data.email || null,
+        phone: data.phone || null,
+        address: data.address,
+        img: data.img || null,
+        bloodType: data.bloodType,
+        sex: data.sex,
+        birthday: data.birthday,
+        subjects: {
+          connect: data.subjects?.map((subjectId: string) => ({
+            id: parseInt(subjectId),
+          })),
+        },
+      },
     });
     // revalidatePath("/list/teachers");
     return {
@@ -200,7 +223,23 @@ export const updateTeacher = async (
       where: {
         id: data.id,
       },
-      data,
+      data: {
+        username: data.username,
+        name: data.name,
+        surname: data.surname,
+        email: data.email || null,
+        phone: data.phone || null,
+        address: data.address,
+        img: data.img || null,
+        bloodType: data.bloodType,
+        sex: data.sex,
+        birthday: data.birthday,
+        subjects: {
+          set: data.subjects?.map((subjectId: string) => ({
+            id: parseInt(subjectId),
+          })),
+        },
+      },
     });
     // revalidatePath("/list/teachers");
     return {
@@ -225,7 +264,7 @@ export const deleteTeacher = async (
   try {
     await prisma.teacher.delete({
       where: {
-        id: parseInt(id),
+        id: id,
       },
     });
     // revalidatePath("/list/teachers");
