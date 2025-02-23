@@ -1,5 +1,5 @@
 "use client";
-import { deleteClass, deleteSubject, deleteTeacher, deleteStudent } from "@/lib/actions";
+import { deleteClass, deleteSubject, deleteTeacher, deleteStudent, deleteExam } from "@/lib/actions";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,7 @@ const deleteActionMap: any = {
   class: deleteClass,
   teacher: deleteTeacher,
   student: deleteStudent,
-  // exam: deleteExam,
+  exam: deleteExam,
   // TODO: OTHER DELETE ACTIONS
   parent: deleteSubject,
   lesson: deleteSubject,
@@ -36,6 +36,9 @@ const SubjectForm = dynamic(() => import("./forms/SubjectForm"), {
   loading: () => <div>Loading...</div>,
 });
 const ClassForm = dynamic(() => import("./forms/ClassForm"), {
+  loading: () => <div>Loading...</div>,
+});
+const ExamForm = dynamic(() => import("./forms/ExamForm"), {
   loading: () => <div>Loading...</div>,
 });
 
@@ -77,6 +80,14 @@ const forms: {
       setOpen={setOpen}
       type={type}
       data={data}
+      relatedData={relatedData}
+    />
+  ),
+  exam: (setOpen, type, data, relatedData) => (
+    <ExamForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
       relatedData={relatedData}
     />
   ),
