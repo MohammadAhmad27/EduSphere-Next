@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BigCalendarContainer from "@/components/BigCalendarContainer";
+import FormContainer from "@/components/FormContainer";
 
 const Performance = dynamic(() => import("@/components/Performance"), {
   ssr: false,
@@ -63,9 +64,14 @@ const SingleStudentPage = async ({ params }: { params: { id: string } }) => {
               />
             </div>
             <div className="w-2/3 flex flex-col justify-between gap-4">
-              <h1 className="text-xl font-semibold">
-                {student?.name + " " + student?.surname}
-              </h1>
+              <div className="flex items-center gap-4">
+                <h1 className="text-xl font-semibold">
+                  {student?.name + " " + student?.surname}
+                </h1>
+                {role === "admin" && (
+                  <FormContainer table="student" type="update" data={student} />
+                )}
+              </div>
               <p className="text-sm text-gray-500">
                 Lorem ipsum dolor sit amet consectetur
               </p>

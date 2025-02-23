@@ -3,11 +3,14 @@
 import { revalidatePath } from "next/cache";
 import {
   ClassSchema,
+  StudentSchema,
   SubjectSchema,
   TeacherSchema,
 } from "./formValidationSchemas";
 import prisma from "./prisma";
 import { v4 as uuidv4 } from "uuid"; // Import UUID
+import { clerkClient } from "@clerk/nextjs/server";
+
 
 type CurrentState = { success: boolean; error: boolean };
 
@@ -268,6 +271,126 @@ export const deleteTeacher = async (
       },
     });
     // revalidatePath("/list/teachers");
+    return {
+      success: true,
+      error: false,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error: true,
+    };
+  }
+};
+
+// create student
+export const createStudent = async (
+  currentState: CurrentState,
+  data: StudentSchema
+) => {
+  try {
+    const classItem = await prisma.class.findUnique({
+      where: { id: data.classId },
+      include: { _count: { select: { students: true } } },
+    });
+
+    if (classItem && classItem.capacity === classItem._count.students) {
+      return {
+        success: false,
+        error: true,
+        message: "Class is full.",
+      };
+    }
+
+    const uniqueId = uuidv4(); // Generate a unique ID
+
+    await prisma.student.create({
+      data: {
+        id: uniqueId,
+        username: data.username,
+        name: data.name,
+        surname: data.surname,
+        email: data.email || null,
+        phone: data.phone || null,
+        address: data.address,
+        img: data.img || null,
+        bloodType: data.bloodType,
+        sex: data.sex,
+        birthday: data.birthday,
+        gradeId: data.gradeId,
+        classId: data.classId,
+        parentId: data.parentId,
+      },
+    });
+    // revalidatePath("/list/students");
+    return {
+      success: true,
+      error: false,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error: true,
+    };
+  }
+};
+
+// update student
+export const updateStudent = async (
+  currentState: CurrentState,
+  data: StudentSchema
+) => {
+  try {
+    await prisma.student.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        username: data.username,
+        name: data.name,
+        surname: data.surname,
+        email: data.email || null,
+        phone: data.phone || null,
+        address: data.address,
+        img: data.img || null,
+        bloodType: data.bloodType,
+        sex: data.sex,
+        birthday: data.birthday,
+        gradeId: data.gradeId,
+        classId: data.classId,
+        parentId: data.parentId,
+      },
+    });
+    // revalidatePath("/list/students");
+    return {
+      success: true,
+      error: false,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error: true,
+    };
+  }
+};
+
+// delete teacher
+export const deleteStudent = async (
+  currentState: CurrentState,
+  data: FormData
+) => {
+  const id = data.get("id") as string;
+  try {
+    // await clerkClient.users.deleteUser(id);
+    await prisma.student.delete({
+      where: {
+        id: id,
+      },
+    });
+    // revalidatePath("/list/students");
     return {
       success: true,
       error: false,
